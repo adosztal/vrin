@@ -1,0 +1,13 @@
+hostname vRIN-zebra
+password vrin
+
+interface lo
+ description Loopback interface
+ ip address %lo_ipv4%/32
+ ipv6 address %lo_ipv6%/128
+
+interface eth0
+ description Interface connecting to GNS3
+ ip address %eth0_ipv4%
+ ipv6 address %eth0_ipv6%/64
+

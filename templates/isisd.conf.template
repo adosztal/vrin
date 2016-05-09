@@ -1,0 +1,12 @@
+hostname vRIN-ISIS
+password vrin
+log file /var/log/quagga/isisd.log
+ 
+router isis vRIN
+  net %isis_area_number%.%isis_system_id%.00
+  is-type level-%isis_level%
+  lsp-lifetime %isis_lsp_lifetime%
+
+interface eth0
+ ip router isis vRIN
+

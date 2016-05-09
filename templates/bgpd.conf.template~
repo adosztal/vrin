@@ -1,0 +1,21 @@
+hostname vRIN-BGP
+password vrin
+
+log file /var/log/quagga/bgpd.log
+
+router bgp %bgp_local_as%
+ bgp router-id %lo_ipv4%
+ network %lo_ipv4%/32
+ redistribute static
+ neighbor %bgp_neighbor_ipv4% remote-as %remote_as%
+ neighbor %bgp_neighbor_ipv4% soft-reconfiguration inbound
+ neighbor %bgp_neighbor_ipv6% remote-as %remote_as%
+ no neighbor %bgp_neighbor_ipv6% activate
+
+ address-family ipv6
+ network %lo_ipv6%/128
+ redistribute static
+ neighbor %bgp_neighbor_ipv6% activate
+ neighbor %bgp_neighbor_ipv6% soft-reconfiguration inbound
+ exit-address-family
+

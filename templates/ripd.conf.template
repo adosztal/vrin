@@ -1,0 +1,13 @@
+hostname vRIN-RIP
+password vrin
+
+%auth%
+
+router rip
+ version 2
+ network lo
+ network eth0
+ redistribute static %metric%
+
+log file /var/log/quagga/ripd.log
+

@@ -1,0 +1,13 @@
+hostname vRIN-OSPF
+password vrin
+
+%auth%
+
+router ospf
+  router-id %lo_ipv4%
+  network %lo_ipv4%/32 area %ospf_area_number%
+  network %eth0_netv4%/%eth0_maskv4% area %ospf_area_number%
+  redistribute static metric-type %metric%
+
+log file /var/log/quagga/ospfd.log
+

@@ -1,0 +1,131 @@
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no aaa new-model
+memory-size iomem 5
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+!
+!
+ip auth-proxy max-nodata-conns 3
+ip admission max-nodata-conns 3
+!
+ipv6 unicast-routing
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip tcp synwait-time 5
+!         
+!
+!
+!
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+ ipv6 address 2001:AD02::1/128
+ ipv6 enable
+ ipv6 rip vrin_receiver enable
+!
+interface FastEthernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ duplex auto
+ speed auto
+ ipv6 address 2001:AD01::1/64
+ ipv6 enable
+ ipv6 rip vrin_receiver enable
+ no shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ network 0.0.0.0 255.255.255.255 area 0
+!
+router rip
+ version 2
+ network 1.0.0.0
+ network 192.168.2.0
+ no auto-summary
+!
+router bgp 65001
+ bgp router-id 1.1.1.1
+ bgp log-neighbor-changes
+ neighbor 2001:AD01::2 remote-as 65000
+ neighbor 192.168.2.2 remote-as 65000
+ !
+ address-family ipv4
+  no neighbor 2001:AD01::2 activate
+  neighbor 192.168.2.2 activate
+  neighbor 192.168.2.2 soft-reconfiguration inbound
+  no auto-summary
+  no synchronization
+  network 1.1.1.1 mask 255.255.255.255
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2001:AD01::2 activate
+  neighbor 2001:AD01::2 soft-reconfiguration inbound
+  network 2001:AD02::1/128
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+no cdp log mismatch duplex
+ipv6 router rip vrin_receiver
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ login
+!
+!
+end
+

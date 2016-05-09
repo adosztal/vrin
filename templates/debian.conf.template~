@@ -1,0 +1,12 @@
+vtysh_enable=yes
+zebra_options="  --daemon -A %eth0_ipv4%"
+bgpd_options="   --daemon -A %eth0_ipv4%"
+ospfd_options="  --daemon -A %eth0_ipv4%"
+ospf6d_options=" --daemon -A 2001:ad01::2"
+ripd_options="   --daemon -A %eth0_ipv4%"
+ripngd_options=" --daemon -A 2001:ad01::2"
+isisd_options="  --daemon -A %eth0_ipv4%"
+babeld_options=" --daemon -A %eth0_ipv4%"
+
+watchquagga_enable=yes
+watchquagga_options=(--daemon)
