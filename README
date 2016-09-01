@@ -35,11 +35,19 @@ using their default ports:
 - ripng: 2603
 - ospf: 2604
 - bgp: 2605
+- ospf6d: 2606
 VTY password: vrin
 
 Notes:
  - Route generation may take a while when creating lots of routes (i.e. 10k+).
  - Login (serial / VM window): root / vrin
+
+
+
+Version 0.9
+===========
+- OSPFv3 support!
+- Upgraded base system to Debian Stretch with Quagga 1.0.20160315-1.
 
 
 
@@ -112,9 +120,8 @@ Versions v0.1-0.3
 
 TODO
 ====
-- Add IS-IS and OSPFv3 support (much later; Quagga does not support redistribution into
-  IS-IS and has issues with OSPFv3).
-- Input sanity checks.
+- IS-IS support
+- Input sanity checks
 
 
 

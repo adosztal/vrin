@@ -104,11 +104,12 @@ lo() {
 
 # Protocol selection
 proto() {
-    dialog --backtitle "vRIN ${VER}" --title "Routing protocols" --checklist "Select enabled routing protocol(s):" 19 50 4 \
+    dialog --backtitle "vRIN ${VER}" --title "Routing protocols" --checklist "Select enabled routing protocol(s):" 19 50 5 \
         "BGP" "" `egrep "^BGP " $CONF_FILE | cut -d " " -f 2` \
-        "OSPF" "" `grep "^OSPF " $CONF_FILE | cut -d " " -f 2` \
+        "OSPFv2" "" `grep "^OSPFv2 " $CONF_FILE | cut -d " " -f 2` \
+        "OSPFv3" "" `grep "^OSPFv3 " $CONF_FILE | cut -d " " -f 2` \
         "RIP (IPv4)" "" `grep "^RIP " $CONF_FILE | cut -d " " -f 2` \
-        "RIPNG (IPv6)" "" `grep "^RIPNG " $CONF_FILE | cut -d " " -f 2` 2> /tmp/vrin_proto_routing # Output is like "BGP OSPF" or "OSPF RIP (IPv4)", etc.
+        "RIPNG (IPv6)" "" `grep "^RIPNG " $CONF_FILE | cut -d " " -f 2` 2> /tmp/vrin_proto_routing # Output is like "BGP OSPFv2" or "OSPFv3 RIP (IPv4)", etc.
         
     RETVAL=$?
 
@@ -122,12 +123,20 @@ proto() {
                 sed -i 's/^BGP.*$/BGP on/g' $CONF_FILE
             fi
             
-            # OSPF
-            PROTO=`grep OSPF /tmp/vrin_proto_routing`
+            # OSPFv2
+            PROTO=`grep OSPFv2 /tmp/vrin_proto_routing`
             if [ ${#PROTO} = "0" ]; then
-                sed -i 's/^OSPF.*$/OSPF off/g' $CONF_FILE
+                sed -i 's/^OSPFv2.*$/OSPFv2 off/g' $CONF_FILE
             else
-                sed -i 's/^OSPF.*$/OSPF on/g' $CONF_FILE
+                sed -i 's/^OSPFv2.*$/OSPFv2 on/g' $CONF_FILE
+            fi
+            
+            # OSPFv3
+            PROTO=`grep OSPFv3 /tmp/vrin_proto_routing`
+            if [ ${#PROTO} = "0" ]; then
+                sed -i 's/^OSPFv3.*$/OSPFv3 off/g' $CONF_FILE
+            else
+                sed -i 's/^OSPFv3.*$/OSPFv3 on/g' $CONF_FILE
             fi
             
             # RIP
@@ -161,7 +170,7 @@ ospf() {
     OSPF_METRIC_NUMBER=`grep ospf_metric_number $CONF_FILE | cut -d " " -f 2`
 
     # Area number
-    dialog --backtitle "vRIN ${VER}" --title "OSPF 1/3" --inputbox "OSPF area:" 19 50 $OSPF_AREA_NUMBER 2> /tmp/vrin_ospf_area_number
+    dialog --backtitle "vRIN ${VER}" --title "OSPF 1/3" --inputbox "OSPF area in dotted decimal (x.x.x.x) format:" 19 50 $OSPF_AREA_NUMBER 2> /tmp/vrin_ospf_area_number
     
     RETVAL=$?
     case $RETVAL in
@@ -403,7 +412,8 @@ show() {
     ETH0_IPv6=`grep eth0_ipv6 $CONF_FILE | cut -d " " -f 2`
     ETH0_NETv6=`grep eth0_netv6 $CONF_FILE | cut -d " " -f 2`
     BGP=`grep BGP $CONF_FILE | cut -d " " -f 2`
-    OSPF=`grep OSPF $CONF_FILE | cut -d " " -f 2`
+    OSPFv2=`grep OSPFv2 $CONF_FILE | cut -d " " -f 2`
+    OSPFv3=`grep OSPFv3 $CONF_FILE | cut -d " " -f 2`
     RIP=`grep "^RIP " $CONF_FILE | cut -d " " -f 2`
     RIPNG=`grep RIPNG $CONF_FILE | cut -d " " -f 2`
     LO_IPv4=`grep lo_ipv4 $CONF_FILE | cut -d " " -f 2`
@@ -440,8 +450,9 @@ BGP neighbor IPs: $BGP_NEIGHBOR_IPv4 | $BGP_NEIGHBOR_IPv6"
 
     # Show OSPF status, but details only if OSPF = on
     MSGOUT="$MSGOUT\n
-OSPF: $OSPF"
-    if [ $OSPF = "on" ]; then
+OSPFv2: $OSPFv2\n
+OSPFv3: $OSPFv3"
+    if [ $OSPFv2 = "on" ] || [ $OSPFv3 = "on" ]; then
         MSGOUT="$MSGOUT\n
 OSPF area number: $OSPF_AREA_NUMBER\n
 OSPF metric type: E$OSPF_METRIC_TYPE\n
@@ -530,7 +541,8 @@ generate() {
             ETH0_IPv6=`grep eth0_ipv6 $CONF_FILE | cut -d " " -f 2`
             ETH0_NETv6=`grep eth0_netv6 $CONF_FILE | cut -d " " -f 2`
             BGP=`grep BGP $CONF_FILE | cut -d " " -f 2`
-            OSPF=`grep OSPF $CONF_FILE | cut -d " " -f 2`
+            OSPFv2=`grep OSPFv2 $CONF_FILE | cut -d " " -f 2`
+            OSPFv3=`grep OSPFv3 $CONF_FILE | cut -d " " -f 2`
             RIP=`grep "^RIP " $CONF_FILE | cut -d " " -f 2`
             RIPNG=`grep RIPNG $CONF_FILE | cut -d " " -f 2`
             LO_IPv4=`grep lo_ipv4 $CONF_FILE | cut -d " " -f 2`
@@ -575,6 +587,9 @@ generate() {
                 sed -i "s/%metric%/$OSPF_METRIC_TYPE metric $OSPF_METRIC_NUMBER/g" $QDIR/ospfd.conf
             fi
 
+
+            # Generating ospf6d.conf
+            sed "s/%lo_ipv4%/$LO_IPv4/g;s/%ospf_area_number%/$OSPF_AREA_NUMBER/g" $QDIR/templates/ospf6d.conf.template > $QDIR/ospf6d.conf
 
             # Generating ripd.conf & ripngd.conf
             if [ $AUTH_TYPE = "None" ]; then
@@ -639,12 +654,16 @@ generate() {
             else
                 echo "bgpd=no" >> $QDIR/daemons
             fi
-            if [ $OSPF = "on" ]; then
+            if [ $OSPFv2 = "on" ]; then
                 echo "ospfd=yes" >> $QDIR/daemons
             else
                 echo "ospfd=no" >> $QDIR/daemons
             fi
-            echo "ospf6d=no" >> $QDIR/daemons
+            if [ $OSPFv3 = "on" ]; then
+                echo "ospf6d=yes" >> $QDIR/daemons
+            else
+                echo "ospf6d=no" >> $QDIR/daemons
+            fi
             if [ $RIP = "on" ]; then
                 echo "ripd=yes" >> $QDIR/daemons
             else
@@ -767,7 +786,7 @@ main() {
 # Global settings
 QDIR="/etc/quagga"
 CONF_FILE="/root/vrin.conf"
-VER="v0.8"
+VER="v0.9"
 
 # Using ifconfig to set eth0 IP address
 ETH0_IPv4=`grep eth0_ipv4 $CONF_FILE | cut -d " " -f 2`
