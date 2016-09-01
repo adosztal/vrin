@@ -6,6 +6,7 @@ Tested on GNS3 topologies using VirtualBox. Runs Quagga.
 Supported protocols:
 - BGP (IPv4/6)
 - OSPF
+- OSPFv3
 - RIP v2
 - RIPng
 
