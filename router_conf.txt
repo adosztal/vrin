@@ -58,12 +58,17 @@ interface FastEthernet0/0
  ipv6 address 2001:AD01::1/64
  ipv6 enable
  ipv6 rip vrin_receiver enable
+ ipv6 ospf 1 area 0
  no shutdown
 !
 router ospf 1
  router-id 1.1.1.1
  log-adjacency-changes
  network 0.0.0.0 255.255.255.255 area 0
+!
+router ospfv3 1
+ router-id 1.1.1.1
+ log-adjacency-changes
 !
 router rip
  version 2
