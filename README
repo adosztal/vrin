@@ -45,6 +45,14 @@ Notes:
 
 
 
+Version 0.9.1
+=============
+- FIXED: Using IPv4 prefix for assigning IPv6 address to eth0 (@Andrew
+  Coleman, thanks!).
+- Package updates
+
+
+
 Version 0.9
 ===========
 - OSPFv3 support!
@@ -103,7 +111,7 @@ Version 0.5
 
 
 
-Version v0.4
+Version 0.4
 ============
 - First fully working version but still beta.
 - RIP authentication key can be up to 16 characters. This is a limitation of
@@ -113,7 +121,7 @@ Version v0.4
 
 
 
-Versions v0.1-0.3
+Versions 0.1-0.3
 =================
 - These were internal development versions, they're not available for download
 
@@ -134,8 +142,8 @@ Andras Dosztal (@adosztal)
 
 Disclaimer
 ==========
-vRIN is copyrighted (c) by Andras Dosztal 2015.  Any injury or loss due to the
-use of this software is not the responsibility of the author.  This software
+vRIN is copyrighted (c) by Andras Dosztal 2015-2017.  Any injury or loss due to
+the use of this software is not the responsibility of the author. This software
 is provided "as is" without any express or implied warranties, including,
 without limitation, the implied warranties of merchantability and fitness for
 a particular purpose.
