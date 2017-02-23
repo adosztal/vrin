@@ -686,7 +686,7 @@ babeld=no" >> $QDIR/daemons
 
             # Using ifconfig to overwrite IP address
             /sbin/ifconfig eth0 $ETH0_IPv4 netmask $ETH0_MASKv4
-            /sbin/ifconfig eth0 inet6 add $ETH0_IPv4/64
+            /sbin/ifconfig eth0 inet6 add $ETH0_IPv6/64
 
 
             # (Re)starting quagga
@@ -793,6 +793,6 @@ ETH0_IPv4=`grep eth0_ipv4 $CONF_FILE | cut -d " " -f 2`
 ETH0_MASKv4=`grep eth0_maskv4 $CONF_FILE | cut -d " " -f 2`
 ETH0_IPv6=`grep eth0_ipv6 $CONF_FILE | cut -d " " -f 2`
 /sbin/ifconfig eth0 $ETH0_IPv4 netmask $ETH0_MASKv4
-/sbin/ifconfig eth0 inet6 add $ETH0_IPv4/64
+/sbin/ifconfig eth0 inet6 add $ETH0_IPv6/64
 
 main
