@@ -45,6 +45,12 @@ Notes:
 
 
 
+Version 0.9.2
+=============
+- FIXED: Netmask issue when changing IPv4 address (@LordHammer, thanks!).
+
+
+
 Version 0.9.1
 =============
 - FIXED: Using IPv4 prefix for assigning IPv6 address to eth0 (@Andrew
